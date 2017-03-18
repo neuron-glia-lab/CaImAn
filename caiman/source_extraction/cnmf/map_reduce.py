@@ -256,10 +256,8 @@ def run_CNMF_patches(file_name, shape, options, rf=16, stride = 4, gnb = 1, dvie
             dview.results.clear()   
 
         except:
-            print('Something went wrong')  
+            print("Unexpected error:", sys.exc_info()[0])
             raise
-        finally:
-            print('You may think that it went well but reality is harsh')
 
 
     else:
