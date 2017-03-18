@@ -341,7 +341,7 @@ def run_CNMF_patches(file_name, shape, options, rf=16, stride = 4, gnb = 1, dvie
                 if new_comp.sum()>0:
                     A_tot[idx_,count]=new_comp
                     C_tot[count,:]=C[ii,:]                      
-                    YrA_tot[count,:]=YrA[ii,:]
+                    YrA_tot[count,:]=YrA.T[ii,:]
                     id_patch_tot.append(patch_id)
                     count+=1
 
