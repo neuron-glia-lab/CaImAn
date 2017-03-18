@@ -78,7 +78,8 @@ def cnmf_patches(args_in):
                                         rf=None,stride=None, memory_fact=1, gnb = options['init_params']['nb'],\
                                         only_init_patch = options['patch_params']['only_init']\
                                         ,method_deconvolution =  options['temporal_params']['method'], n_pixels_per_process = options['preprocess_params']['n_pixels_per_process'],\
-                                        block_size = options['temporal_params']['block_size'], check_nan = options['preprocess_params']['check_nan'], skip_refinement = options['patch_params']['skip_refinement'])
+                                        block_size = options['temporal_params']['block_size'], check_nan = options['preprocess_params']['check_nan'],\
+                                        skip_refinement = options['patch_params']['skip_refinement'],N_iterations_refinement=options['patch_params']['nIter'])
         
         cnm = cnm.fit(images)   
 
