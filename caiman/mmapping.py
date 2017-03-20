@@ -60,7 +60,7 @@ def load_memmap(filename):
         return Yr, None, None
 
 #%% 
-def save_memmap_each(fnames, dview=None, base_name=None, resize_fact=(1, 1, 1), remove_init=0, idx_xy=None,xy_shifts=None,add_to_movie=0,border_to_0=0):
+def save_memmap_each(fnames, dview=None, base_name=None, resize_fact=(1, 1, 1), remove_init=0, idx_xy=None,xy_shifts=None,add_to_movie=0,border_to_0=0,save_dir=None):
     """
     Create several memory mapped files using parallel processing
 
@@ -111,9 +111,9 @@ def save_memmap_each(fnames, dview=None, base_name=None, resize_fact=(1, 1, 1), 
 
     for idx,f in enumerate(fnames):
         if base_name is not None:
-            pars.append([f,base_name+'{:04d}'.format(idx),resize_fact[idx],remove_init,idx_xy,order,xy_shifts[idx],add_to_movie,border_to_0])
+            pars.append([f,base_name+'{:04d}'.format(idx),resize_fact[idx],remove_init,idx_xy,order,xy_shifts[idx],add_to_movie,border_to_0,save_dir])
         else:
-            pars.append([f,os.path.splitext(f)[0],resize_fact[idx],remove_init,idx_xy,order,xy_shifts[idx],add_to_movie,border_to_0])            
+            pars.append([f,os.path.splitext(f)[0],resize_fact[idx],remove_init,idx_xy,order,xy_shifts[idx],add_to_movie,border_to_0,save_dir])            
 
     if dview is not None:
         fnames_new=dview.map_sync(save_place_holder,pars)
@@ -220,11 +220,11 @@ def save_portion(pars):
 def save_place_holder(pars):
     """ To use map reduce
     """
-    f,base_name,resize_fact,remove_init,idx_xy,order,xy_shifts,add_to_movie,border_to_0=pars   
-    return save_memmap([f],base_name=base_name,resize_fact=resize_fact,remove_init=remove_init, idx_xy=idx_xy, order=order,xy_shifts=xy_shifts,add_to_movie=add_to_movie,border_to_0=border_to_0)
+    f,base_name,resize_fact,remove_init,idx_xy,order,xy_shifts,add_to_movie,border_to_0,save_dir=pars   
+    return save_memmap([f],base_name=base_name,resize_fact=resize_fact,remove_init=remove_init, idx_xy=idx_xy, order=order,xy_shifts=xy_shifts,add_to_movie=add_to_movie,border_to_0=border_to_0,save_dir=save_dir)
 
 #%%
-def save_memmap(filenames, base_name='Yr', resize_fact=(1, 1, 1), remove_init=0, idx_xy=None, order='F',xy_shifts=None,is_3D=False,add_to_movie=0,border_to_0=0):
+def save_memmap(filenames, base_name='Yr', resize_fact=(1, 1, 1), remove_init=0, idx_xy=None, order='F',xy_shifts=None,is_3D=False,add_to_movie=0,border_to_0=0, save_dir=None):
 
     """ Saves efficiently a list of tif files into a memory mappable file
     Parameters
@@ -320,7 +320,12 @@ def save_memmap(filenames, base_name='Yr', resize_fact=(1, 1, 1), remove_init=0,
         if idx == 0:
             fname_tot = base_name + '_d1_' + str(dims[0]) + '_d2_' + str(dims[1]) + '_d3_' + str(
                 1 if len(dims) == 2 else dims[2]) + '_order_' + str(order)
-            fname_tot = os.path.join(os.path.split(f)[0],fname_tot)         
+
+            if save_dir is None:
+                fname_tot = os.path.join(os.path.split(f)[0],fname_tot)
+            else:
+                fname_tot = os.path.join(save_dir,fname_tot)
+
             big_mov = np.memmap(fname_tot, mode='w+', dtype=np.float32,
                                 shape=(np.prod(dims), T), order=order)
         else:
