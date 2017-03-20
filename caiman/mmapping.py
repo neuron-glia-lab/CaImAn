@@ -186,7 +186,7 @@ def save_memmap_join(mmap_fnames,base_name=None, n_chunks=12, dview=None, async=
         res=list(map(save_portion, pars))
 
 
-    np.savez(base_name+'.npz',mmap_fnames=mmap_fnames,fname_tot=fname_tot)
+#    np.savez(base_name+'.npz',mmap_fnames=mmap_fnames,fname_tot=fname_tot)
 
     print('Deleting big mov')
     del big_mov
