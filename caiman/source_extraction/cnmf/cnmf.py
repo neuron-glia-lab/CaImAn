@@ -226,12 +226,14 @@ class CNMF(object):
 
             if not self.skip_refinement:
 
+                g1 = g 
+
                 for _ in range(self.N_iterations_refinement):
 
                     if self.do_merge:
                         print('merge components ...')
                         A, C, nr, merged_ROIs, S, bl, c1, sn1, g1 = merge_components(Yr, A, b, C, f, S, sn, options['temporal_params'], options[
-                                                                                 'spatial_params'], dview=self.dview, bl=bl, c1=c1, sn=neurons_sn, g=g, thr=self.merge_thresh, mx=50, fast_merge=True)
+                                                                                 'spatial_params'], dview=self.dview, bl=bl, c1=c1, sn=neurons_sn, g=g1, thr=self.merge_thresh, mx=50, fast_merge=True)
 
                     print((A.shape))
 
