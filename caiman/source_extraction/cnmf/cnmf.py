@@ -35,7 +35,7 @@ class CNMF(object):
     def __init__(self, n_processes, k=5, gSig=[4,4], merge_thresh=0.8 , p=2, dview=None, Ain=None, Cin=None, f_in=None,do_merge=True,\
                                         ssub=2, tsub=2,p_ssub=1, p_tsub=1, method_init= 'greedy_roi',alpha_snmf=None,\
                                         rf=None,stride=None, memory_fact=1, gnb = 1, only_init_patch=False,\
-                                        method_deconvolution = 'oasis', n_pixels_per_process = 4000, block_size = 20000, check_nan = True, skip_refinement = False):
+                                        method_deconvolution = 'oasis', n_pixels_per_process = 4000, block_size = 20000, check_nan = True, skip_refinement = False, N_iterations_refinement = 1):
         """ 
         Constructor of the CNMF method
 
@@ -97,6 +97,9 @@ class CNMF(object):
         N_samples_fitness: int 
             number of samples over which exceptional events are computed (See utilities.evaluate_components) 
 
+        N_iterations_refinement: int 
+            number of iterations over which to merge and then update the spatial and temporal compoents
+
 
         
 
@@ -132,6 +135,7 @@ class CNMF(object):
         self.block_size = block_size
         self.check_nan = check_nan
         self.skip_refinement = skip_refinement
+        self.N_iterations_refinement = N_iterations_refinement
 
         self.A=None
         self.C=None
@@ -222,23 +226,25 @@ class CNMF(object):
 
             if not self.skip_refinement:
 
-                if self.do_merge:
-                    print('merge components ...')
-                    A, C, nr, merged_ROIs, S, bl, c1, sn1, g1 = merge_components(Yr, A, b, C, f, S, sn, options['temporal_params'], options[
+                for _ in range(self.N_iterations_refinement):
+
+                    if self.do_merge:
+                        print('merge components ...')
+                        A, C, nr, merged_ROIs, S, bl, c1, sn1, g1 = merge_components(Yr, A, b, C, f, S, sn, options['temporal_params'], options[
                                                                                  'spatial_params'], dview=self.dview, bl=bl, c1=c1, sn=neurons_sn, g=g, thr=self.merge_thresh, mx=50, fast_merge=True)
 
-                print((A.shape))
+                    print((A.shape))
 
-                print('update spatial ...')
+                    print('update spatial ...')
 
-                A, b, C, f = update_spatial_components(
-                    Yr, C, f, A, sn=sn, dview=self.dview, **options['spatial_params'])
+                    A, b, C, f = update_spatial_components(
+                        Yr, C, f, A, sn=sn, dview=self.dview, **options['spatial_params'])
 
-                # set it back to original value to perform full deconvolution
-                options['temporal_params']['p'] = self.p
-                print('update temporal ...')
-                C, f, S, bl, c1, neurons_sn, g1, YrA = update_temporal_components(
-                    Yr, A, b, C, f, dview=self.dview, bl=None, c1=None, sn=None, g=None, **options['temporal_params'])
+                    # set it back to original value to perform full deconvolution
+                    options['temporal_params']['p'] = self.p
+                    print('update temporal ...')
+                    C, f, S, bl, c1, neurons_sn, g1, YrA = update_temporal_components(
+                        Yr, A, b, C, f, dview=self.dview, bl=None, c1=None, sn=None, g=None, **options['temporal_params'])
 
             else:
 

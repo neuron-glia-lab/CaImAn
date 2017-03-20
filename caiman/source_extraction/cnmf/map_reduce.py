@@ -78,7 +78,8 @@ def cnmf_patches(args_in):
                                         rf=None,stride=None, memory_fact=1, gnb = options['init_params']['nb'],\
                                         only_init_patch = options['patch_params']['only_init']\
                                         ,method_deconvolution =  options['temporal_params']['method'], n_pixels_per_process = options['preprocess_params']['n_pixels_per_process'],\
-                                        block_size = options['temporal_params']['block_size'], check_nan = options['preprocess_params']['check_nan'], skip_refinement = options['patch_params']['skip_refinement'])
+                                        block_size = options['temporal_params']['block_size'], check_nan = options['preprocess_params']['check_nan'],\
+                                        skip_refinement = options['patch_params']['skip_refinement'],N_iterations_refinement=options['patch_params']['nIter'])
         
         cnm = cnm.fit(images)   
 
@@ -255,10 +256,8 @@ def run_CNMF_patches(file_name, shape, options, rf=16, stride = 4, gnb = 1, dvie
             dview.results.clear()   
 
         except:
-            print('Something went wrong')  
+            print("Unexpected error:", sys.exc_info()[0])
             raise
-        finally:
-            print('You may think that it went well but reality is harsh')
 
 
     else:
@@ -342,7 +341,7 @@ def run_CNMF_patches(file_name, shape, options, rf=16, stride = 4, gnb = 1, dvie
                 if new_comp.sum()>0:
                     A_tot[idx_,count]=new_comp
                     C_tot[count,:]=C[ii,:]                      
-                    YrA_tot[count,:]=YrA[ii,:]
+                    YrA_tot[count,:]=YrA.T[ii,:]
                     id_patch_tot.append(patch_id)
                     count+=1
 

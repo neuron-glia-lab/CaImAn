@@ -531,7 +531,7 @@ def dot_place_holder(par):
 
 #     import pdb
 #     pdb.set_trace()    
-    print((idx_to_pass[-1]))
+#    print((idx_to_pass[-1]))
 
 
     if 'sparse' in str(type(b_)):
