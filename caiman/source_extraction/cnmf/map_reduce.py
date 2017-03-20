@@ -19,6 +19,7 @@ from scipy.sparse import lil_matrix,coo_matrix
 import time
 import scipy
 import os
+import sys
 from caiman.mmapping import load_memmap
 from caiman.cluster import extract_patch_coordinates,extract_rois_patch,extract_patch_coordinates_old
 #from caiman.source_extraction.cnmf import cnmf as cnmf
