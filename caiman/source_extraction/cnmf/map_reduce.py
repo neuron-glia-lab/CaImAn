@@ -60,7 +60,7 @@ def cnmf_patches(args_in):
     
     if (np.sum(np.abs(np.diff(Yr))))>0.1:
 
-        Yr.filename=file_name
+        #Yr.filename=file_name
         d,T=Yr.shape      
 
         
@@ -72,7 +72,7 @@ def cnmf_patches(args_in):
         dims = shapes #shapes[1],shapes[0],shapes[2]
         images = np.reshape(Yr.T, [T] + list(dims), order='F')
 
-        images.filename=file_name
+        #images.filename=file_name
         
         cnm = cnmf.CNMF(n_processes = 1, k = options['init_params']['K'], gSig = options['init_params']['gSig'], merge_thresh = options['merging']['thr'], p = p, dview = None,  Ain = None,  Cin = None, f_in = None, do_merge = True,\
                                         ssub = options['init_params']['ssub'], tsub = options['init_params']['ssub'], p_ssub = 1, p_tsub = 1, method_init = options['init_params']['method'], alpha_snmf = options['init_params']['alpha_snmf'],\
